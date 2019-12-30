@@ -1,0 +1,13 @@
+version: '2'
+services:
+  PostgreSQL:
+    container_name: NestJSBoilerplate
+    image: postgres:10-alpine
+    ports:
+      - '5531:5432'
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=toor
+      - POSTGRES_DB=boilerplate
+    volumes:
+      - ./docker-volumes/postgresql:/var/lib/postgresql
