@@ -31,7 +31,6 @@
     "pg": "^7.17.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
-    "rxjs": "^6.5.3",
     "typeorm": "^0.2.22"
   },
   "devDependencies": {
@@ -47,6 +46,7 @@
     "jest": "^24.9.0",
     "nodemon": "^2.0.2",
     "prettier": "^1.18.2",
+    "rxjs": "^6.5.4",
     "supertest": "^4.0.2",
     "ts-jest": "^24.1.0",
     "ts-loader": "^6.1.1",

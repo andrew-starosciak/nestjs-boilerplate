@@ -9,7 +9,7 @@ import { DatabaseModule } from '../database/index';
 import { AuthenticationController } from './controllers/index';
 import { jwtConstants } from './constants/index';
 import { UserEntity } from './entities/index';
-import { AuthenticationService, UsersService } from './services/index';
+import { AuthenticationService, UsersService, JwtStrategy } from './services/index';
 import { USER_REPOSITORY_TOKEN } from './tokens/index';
 
 /**
@@ -36,6 +36,7 @@ export const providers = [{
     providers: [
         ...providers,
         AuthenticationService,
+        JwtStrategy,
         UsersService,
     ],
     exports: [],

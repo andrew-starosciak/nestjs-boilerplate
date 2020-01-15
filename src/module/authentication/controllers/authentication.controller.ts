@@ -1,7 +1,9 @@
-import { Controller, Post, Req } from '@nestjs/common';
+import { Controller, Post, Req, Logger, UseGuards, Get, HttpException, HttpStatus } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
 
 import { AuthenticationService } from '../services/index';
-import { Request } from 'express';
+import { BaseError } from 'src/models';
 
 @Controller()
 export class AuthenticationController {
@@ -12,10 +14,30 @@ export class AuthenticationController {
         // Empty
     }
 
+    @Post('auth/create')
+    public create(@Req() req: Request) {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            throw new HttpException({
+                status: HttpStatus.UNPROCESSABLE_ENTITY,
+                error: new BaseError('Please enter a valid email or password.', null, {email, password}),
+            }, 403);
+        }
+
+        return this._authenticationService.create(email, password);
+    }
+
     @Post('auth/login')
     public async login(@Req() req: Request) {
-        console.log(req.body);
-        console.log(JSON.parse(req.body));
-        return this._authenticationService.login(req.user);
+        const { email, password } = req.body;
+
+        return this._authenticationService.login(email, password);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('protected/ping')
+    public async protectedPing() {
+        return ['Ping'];
     }
 }
