@@ -1,7 +1,7 @@
 import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Observable, of, throwError } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 import { BaseResponse, BaseError } from '../../../models/index';
 
@@ -31,9 +31,11 @@ export class AuthenticationService {
                 return this._usersService.createOne(email, password);
             }),
             map((user) => {
-                return new BaseResponse<UserEntity>().from({
+                return new BaseResponse<{access_token: string}>().from({
                     status: HttpStatus.OK,
-                    payload: user,
+                    payload: {
+                        access_token: this._jwtService.sign(user),
+                    },
                 });
             }),
         );
@@ -41,19 +43,24 @@ export class AuthenticationService {
 
     public login(email: string, password: string): Observable<any> {
         return this.validateUser(email, password).pipe(
+            tap((user) => Logger.log(user)),
             map((user) => {
                 if (user) {
                     delete user.password;
-                    return new BaseResponse<{access_token: string}>().from({
+                    return new BaseResponse<{access_token: any}>().from({
                         status: HttpStatus.OK,
                         payload: {
-                            access_token: this._jwtService.sign(user),
+                            access_token: this._jwtService.sign({
+                                id: user.id,
+                                username: user.username,
+                                email: user.email,
+                            }),
                         },
                     });
                 } else {
                     throw new HttpException({
                         status: HttpStatus.NOT_FOUND,
-                        message: new BaseError('This user is not found.'),
+                        message: new BaseError('This user is not found or bad password.'),
                     }, 400);
                 }
             }),
@@ -62,13 +69,6 @@ export class AuthenticationService {
 
     // Lets find if the one user does exists and if the passwords match.
     private validateUser(email: string, password: string): Observable<UserEntity | null> {
-        return this._usersService.findOne(email).pipe(
-            map((validUser) => {
-                if (validUser && validUser.password === password) {
-                    return validUser;
-                }
-                return null;
-            }),
-        );
+        return this._usersService.validateUserByLogin(email, password);
     }
 }

@@ -24,4 +24,15 @@ export class UserEntity {
     @Column({ nullable: true})
     public deletedAt: Date;
 
+    // public from?(partial: Partial<UserEntity>): this {
+    //     this.id = partial.id;
+    //     this.username = partial.username;
+    //     this.email = partial.email;
+    //     this.password = partial.password;
+    //     this.createdAt = partial.createdAt;
+    //     this.updatedAt = partial.updatedAt;
+    //     this.deletedAt = partial.deletedAt;
+    //     return this;
+    // }
+
 }
