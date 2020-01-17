@@ -31,6 +31,7 @@ export class UsersService {
     public validateUserByLogin(email: string, password: string): Observable<UserEntity | undefined> {
         return from(this._userRepository.findOne({where: { email }})).pipe(
             switchMap((user) => {
+                if (!user) { return of(null); }
                 return from(bcrypt.compare(password, user.password)).pipe(
                     map((result: boolean) => {
                         if (result) {
