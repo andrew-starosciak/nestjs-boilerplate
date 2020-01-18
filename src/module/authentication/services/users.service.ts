@@ -1,4 +1,4 @@
-import { Injectable, Inject, Logger } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { from, Observable, of } from 'rxjs';
 import { map, tap, switchMap } from 'rxjs/operators';

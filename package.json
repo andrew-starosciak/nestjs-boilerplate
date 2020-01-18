@@ -18,7 +18,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/module/database/orm.config.ts",
+    "typeorm": "./node_modules/.bin/env-cmd -f .env ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/module/database/orm-run.config.ts",
     "typeorm:migrate": "npm run typeorm migration:generate -- -n",
     "typeorm:run": "npm run typeorm migration:run",
     "typeorm:revert": "npm run typeorm migration:revert"
@@ -53,6 +53,7 @@
     "@types/passport-jwt": "^3.0.3",
     "@types/passport-local": "^1.0.33",
     "@types/supertest": "^2.0.8",
+    "env-cmd": "^10.0.1",
     "jest": "^24.9.0",
     "nodemon": "^2.0.2",
     "prettier": "^1.18.2",

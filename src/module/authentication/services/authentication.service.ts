@@ -1,6 +1,6 @@
-import { Injectable, Logger, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
 import { BaseResponse, BaseError } from '../../../models/index';
@@ -43,7 +43,6 @@ export class AuthenticationService {
 
     public login(email: string, password: string): Observable<any> {
         return this.validateUser(email, password).pipe(
-            tap((user) => Logger.log(user)),
             map((user) => {
                 if (user) {
                     delete user.password;
