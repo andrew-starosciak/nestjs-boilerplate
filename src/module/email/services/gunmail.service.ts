@@ -1,7 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Mailgun from 'mailgun-js';
-import { from, Observable } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
+import { EmailProviderTypes } from '../entities/index';
+
+export interface EmailProviderResponse<T> {
+    data: T;
+    provider: any;
+}
 
 @Injectable()
 export class GunmailEmailService {
@@ -22,13 +30,20 @@ export class GunmailEmailService {
         });
     }
 
-    public send(): Observable<Mailgun.messages.SendResponse | Mailgun.Error> {
+    public send(): Observable<EmailProviderResponse<Mailgun.messages.SendResponse>> {
         const data = {
             from: 'test <andrew@' + this._configService.get<string>('EMAIL_MAILGUN_DOMAIN') + '>',
             to: 'andrewstarosciak@gmail.com',
             subject: 'Hello',
             text: 'Testing some Mailgun awesomeness!',
           };
-        return from(this.client.messages().send(data));
+        return from(this.client.messages().send(data)).pipe(
+            switchMap((clientResponse) => {
+                return of({
+                    data: clientResponse,
+                    provider: EmailProviderTypes.GUNMAIL,
+                });
+            }),
+        );
     }
 }

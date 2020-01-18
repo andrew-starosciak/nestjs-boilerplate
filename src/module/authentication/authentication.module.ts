@@ -6,6 +6,7 @@ import { Connection } from 'typeorm';
 import { DB_CONNECTION_TOKEN } from '../../common/index';
 
 import { DatabaseModule } from '../database/index';
+import { EmailModule } from '../email/index';
 
 import { AuthenticationController } from './controllers/index';
 import { jwtConstants, USER_REPOSITORY_TOKEN } from './constants/index';
@@ -27,6 +28,7 @@ export const providers = [{
     ],
     imports: [
         DatabaseModule,
+        EmailModule,
         JwtModule.register({
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '60s' },

@@ -2,6 +2,7 @@ import { Controller, Post, Req, Logger, UseGuards, Get, HttpException, HttpStatu
 import { Request } from 'express';
 
 import { EmailService } from '../services/index';
+import { EmailTypes } from '../entities';
 
 @Controller()
 export class EmailController {
@@ -14,6 +15,6 @@ export class EmailController {
 
     @Post('email/test')
     public test(@Req() req: Request) {
-        return this._emailService.send();
+        return this._emailService.send(1, EmailTypes.TEST, {other: 'hello'});
     }
 }

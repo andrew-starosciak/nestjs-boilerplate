@@ -19,7 +19,7 @@ export class EmailHistoryEntity {
     public id: number;
 
     @Column()
-    public userId: string;
+    public userId: number;
 
     @Column()
     public type: EmailTypes.CONFIRMATION | EmailTypes.THANKYOU | EmailTypes.PASSWORDRESET | EmailTypes.SIGNUP | EmailTypes.TEST;

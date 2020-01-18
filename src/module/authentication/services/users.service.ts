@@ -4,18 +4,10 @@ import { from, Observable, of } from 'rxjs';
 import { map, tap, switchMap } from 'rxjs/operators';
 import { Repository } from 'typeorm';
 
+import { TIME } from '../../../common/index';
+
 import { USER_REPOSITORY_TOKEN } from '../constants/index';
 import { UserEntity } from '../entities/index';
-
-let ID = 2;
-
-export function timestamps() {
-    return {
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        deletedAt: null,
-    };
-}
 
 @Injectable()
 export class UsersService {
@@ -52,7 +44,7 @@ export class UsersService {
                     username: email,
                     email,
                     password: hashedPassword,
-                    ...timestamps(),
+                    ...TIME.timestamps(),
                 }));
             }),
         );

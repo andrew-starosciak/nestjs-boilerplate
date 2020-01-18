@@ -1,6 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Injectable, Inject } from '@nestjs/common';
+import { Observable, from } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { Repository } from 'typeorm';
+
+import { TIME } from '../../../common/index';
+
+import { EMAIL_HISTORY_TOKEN } from '../constants/index';
+import { EmailHistoryEntity, EmailTypes } from '../entities/index';
 
 import { GunmailEmailService } from './gunmail.service';
 
@@ -8,16 +14,25 @@ import { GunmailEmailService } from './gunmail.service';
 export class EmailService {
 
     constructor(
+        @Inject(EMAIL_HISTORY_TOKEN) private _emailHistoryRepository: Repository<EmailHistoryEntity>,
         private _gunMailService: GunmailEmailService,
     ) {
         // Empty
     }
 
-    public send(): Observable<any> {
+    public send(userId: number, type: EmailTypes, meta?: any): Observable<any> {
         return this._gunMailService.send().pipe(
-            tap((body) => {
-                Logger.log(body);
-                // Save the data to history email table.
+            switchMap((body) => {
+                return from(this._emailHistoryRepository.save({
+                    userId,
+                    type,
+                    provider: body.provider,
+                    meta: JSON.stringify({
+                        client: body.data,
+                        meta: { ...meta },
+                    }),
+                    ...TIME.timestamps(),
+                }));
             }),
         );
     }
