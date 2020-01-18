@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { AuthenticationModule } from './module/authentication';
+import { EmailModule } from './module/email/index';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,6 +11,7 @@ import { AppService } from './app.service';
   imports: [
     AuthenticationModule,
     ConfigModule.forRoot(),
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

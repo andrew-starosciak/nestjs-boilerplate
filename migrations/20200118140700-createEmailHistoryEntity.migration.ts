@@ -1,13 +1,13 @@
 import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
 /** tslint:disable-next-line */
-export class createUserEntity2020115191400 implements MigrationInterface {
+export class createEmailHistoryEntity20200118140700 implements MigrationInterface {
 
-    name = 'createUserEntity2020115191400';
+    name = 'createEmailHistoryEntity20200118140700';
 
     async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.createTable(new Table({
-            name: 'user_entity',
+            name: 'email_history_entity',
             columns: [
                 {
                     name: 'id',
@@ -16,15 +16,19 @@ export class createUserEntity2020115191400 implements MigrationInterface {
                     isGenerated: true,
                 },
                 {
-                    name: 'username',
+                    name: 'userId',
+                    type: 'int',
+                },
+                {
+                    name: 'type',
                     type: 'varchar',
                 },
                 {
-                    name: 'email',
+                    name: 'meta',
                     type: 'varchar',
                 },
                 {
-                    name: 'password',
+                    name: 'provider',
                     type: 'varchar',
                 },
                 {
@@ -43,16 +47,16 @@ export class createUserEntity2020115191400 implements MigrationInterface {
             ],
         }), true);
 
-        await queryRunner.createIndex('user_entity', new TableIndex({
-            name: 'IDX_USER_EMAIL',
-            columnNames: ['email'],
+        await queryRunner.createIndex('email_history_entity', new TableIndex({
+            name: 'IDX_EMAIL_HISTORY_USERID',
+            columnNames: ['userId'],
         }));
     }
 
     async down(queryRunner: QueryRunner): Promise<any> {
-        const table = await queryRunner.getTable('user_entity');
-        await queryRunner.dropIndex('user_entity', 'IDX_USER_EMAIL');
-        await queryRunner.dropTable('user_entity');
+        const table = await queryRunner.getTable('email_history_entity');
+        await queryRunner.dropIndex('email_history_entity', 'IDX_EMAIL_HISTORY_USERID');
+        await queryRunner.dropTable('email_history_entity');
     }
 
 }
