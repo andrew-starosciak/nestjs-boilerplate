@@ -15,6 +15,6 @@ export class EmailController {
 
     @Post('email/test')
     public test(@Req() req: Request) {
-        return this._emailService.send(1, EmailTypes.TEST, {other: 'hello'});
+        return this._emailService.send({} as any, EmailTypes.TEST, {other: 'hello'});
     }
 }

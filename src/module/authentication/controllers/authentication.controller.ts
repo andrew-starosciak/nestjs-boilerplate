@@ -25,11 +25,38 @@ export class AuthenticationController {
     }
 
     @Post('auth/login')
-    public async login(@Req() req: Request) {
+    public login(@Req() req: Request) {
         const { email, password } = req.body;
         this._validate(email, password);
 
         return this._authenticationService.login(email, password);
+    }
+
+    @Post('auth/password-reset')
+    public reset(@Req() req: Request<any>) {
+        const { email } = req.body;
+
+        if (!email) {
+            throw new HttpException({
+                status: HttpStatus.UNPROCESSABLE_ENTITY,
+                error: new BaseError('Please enter a email address.'),
+            }, 403);
+        }
+
+        return this._authenticationService.reset(email);
+    }
+
+    // TODO: Implement.
+    @Post('auth/password-code')
+    public changePassword(@Req() req: Request<any>) {
+        const { email, password, code } = req.body;
+
+        if (!email || !password || !code) {
+            throw new HttpException({
+                status: HttpStatus.UNPROCESSABLE_ENTITY,
+                error: new BaseError('Please provide valid details to reset.'),
+            }, 403);
+        }
     }
 
     @UseGuards(AuthGuard('jwt'))

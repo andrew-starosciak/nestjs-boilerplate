@@ -9,18 +9,25 @@ import { DatabaseModule } from '../database/index';
 import { EmailModule } from '../email/index';
 
 import { AuthenticationController } from './controllers/index';
-import { jwtConstants, USER_REPOSITORY_TOKEN } from './constants/index';
-import { UserEntity } from './entities/index';
-import { AuthenticationService, UsersService, JwtStrategy } from './services/index';
+import { jwtConstants, PASSWORD_RESET_REPOSITORY_TOKEN, USER_REPOSITORY_TOKEN } from './constants/index';
+import { PasswordResetEntity, UserEntity } from './entities/index';
+import { AuthenticationService, JwtStrategy, PasswordResetService, UsersService } from './services/index';
 
 /**
  * Provide all Entities to be connected to the Database.
  */
-export const providers = [{
-    provide: USER_REPOSITORY_TOKEN,
-    useFactory: (connection: Connection) => connection.getRepository(UserEntity),
-    inject: [DB_CONNECTION_TOKEN],
-}];
+export const providers = [
+    {
+        provide: USER_REPOSITORY_TOKEN,
+        useFactory: (connection: Connection) => connection.getRepository(UserEntity),
+        inject: [DB_CONNECTION_TOKEN],
+    },
+    {
+        provide: PASSWORD_RESET_REPOSITORY_TOKEN,
+        useFactory: (connection: Connection) => connection.getRepository(PasswordResetEntity),
+        inject: [DB_CONNECTION_TOKEN],
+    },
+];
 
 @Module({
     controllers: [
@@ -39,6 +46,7 @@ export const providers = [{
         ...providers,
         AuthenticationService,
         JwtStrategy,
+        PasswordResetService,
         UsersService,
     ],
     exports: [],

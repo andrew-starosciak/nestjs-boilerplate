@@ -49,4 +49,9 @@ export class UsersService {
             }),
         );
     }
+
+    // Find a user by email.
+    public findOneByEmail(email: string): Observable<UserEntity> {
+        return from(this._userRepository.findOneOrFail({where: { email }}));
+    }
 }
