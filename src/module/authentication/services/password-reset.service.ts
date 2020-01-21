@@ -17,7 +17,7 @@ export class PasswordResetService {
     }
 
     public find(userId: number): Observable<PasswordResetEntity | undefined> {
-        return from(this._passwordResetService.findOne({ where: { userId }}));
+        return from(this._passwordResetService.findOne({ where: { userId, deletedAt: null }}));
     }
 
     public create(userId: number): Observable<PasswordResetEntity> {
@@ -26,6 +26,10 @@ export class PasswordResetService {
             code: this._randomPassword(),
             ...TIME.timestamps(),
         }));
+    }
+
+    public close(passwordResetId: number): Observable<any> {
+      return from(this._passwordResetService.update({ id: passwordResetId }, { deletedAt: new Date() }));
     }
 
     // Found on this gist: https://gist.github.com/enishant/4ba920c71f338e83c7089dc5d6f33a64

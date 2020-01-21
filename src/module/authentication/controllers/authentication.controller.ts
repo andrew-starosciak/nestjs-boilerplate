@@ -40,7 +40,7 @@ export class AuthenticationController {
             throw new HttpException({
                 status: HttpStatus.UNPROCESSABLE_ENTITY,
                 error: new BaseError('Please enter a email address.'),
-            }, 403);
+            }, 422);
         }
 
         return this._authenticationService.reset(email);
@@ -55,8 +55,10 @@ export class AuthenticationController {
             throw new HttpException({
                 status: HttpStatus.UNPROCESSABLE_ENTITY,
                 error: new BaseError('Please provide valid details to reset.'),
-            }, 403);
+            }, 422);
         }
+
+        return this._authenticationService.resetCode(email, password, code);
     }
 
     @UseGuards(AuthGuard('jwt'))
@@ -71,14 +73,14 @@ export class AuthenticationController {
             throw new HttpException({
                 status: HttpStatus.UNPROCESSABLE_ENTITY,
                 error: new BaseError('Please enter a valid email or password.', null, {email, password}),
-            }, 403);
+            }, 422);
         }
 
         if (!AuthenticationValidations.ValidEmail(email)) {
             throw new HttpException({
                 status: HttpStatus.UNPROCESSABLE_ENTITY,
                 error: new BaseError('This email is not a valid format.'),
-            }, 400);
+            }, 422);
         }
     }
 }

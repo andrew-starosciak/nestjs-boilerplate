@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { from, Observable, of } from 'rxjs';
 import { map, tap, switchMap } from 'rxjs/operators';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 
 import { TIME } from '../../../common/index';
 
@@ -16,12 +16,12 @@ export class UsersService {
     constructor(
         @Inject(USER_REPOSITORY_TOKEN) private readonly _userRepository: Repository<UserEntity>,
     ) {
-       // Empty
+        // Empty
     }
 
     // Determine the Email and Compare the Password.
     public validateUserByLogin(email: string, password: string): Observable<UserEntity | undefined> {
-        return from(this._userRepository.findOne({where: { email }})).pipe(
+        return from(this._userRepository.findOne({ where: { email } })).pipe(
             switchMap((user) => {
                 if (!user) { return of(null); }
                 return from(bcrypt.compare(password, user.password)).pipe(
@@ -37,7 +37,7 @@ export class UsersService {
     }
 
     // Hash the password and create the user.
-    public createOne(email: string, password: string): Observable<any> {
+    public createOne(email: string, password: string): Observable<UserEntity> {
         return from(bcrypt.hash(password, 12)).pipe(
             switchMap((hashedPassword: string) => {
                 return from(this._userRepository.save({
@@ -52,6 +52,14 @@ export class UsersService {
 
     // Find a user by email.
     public findOneByEmail(email: string): Observable<UserEntity> {
-        return from(this._userRepository.findOneOrFail({where: { email }}));
+        return from(this._userRepository.findOneOrFail({ where: { email } }));
+    }
+
+    public updatePasswordByUserId(userId: number, password: string): Observable<UpdateResult> {
+        return from(bcrypt.hash(password, 12)).pipe(
+            switchMap((hashedPassword: string) => {
+                return from(this._userRepository.update({ id: userId }, { password: hashedPassword, updatedAt: new Date() }));
+            }),
+        );
     }
 }
