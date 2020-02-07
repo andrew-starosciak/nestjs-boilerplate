@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '../database/index';
 
 import { PaymentsController } from './controllers/index';
+import { PaymentsService } from './services/index';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { PaymentsController } from './controllers/index';
     ],
     providers: [
         ConfigService,
+        PaymentsService,
     ],
 })
 export class PaymentsModule {}
